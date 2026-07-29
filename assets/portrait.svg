@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 985 1060" role="img" aria-label="Θέση φωτογραφίας">
+  <rect width="985" height="1060" fill="#e0e7d8"/>
+  <circle cx="492" cy="420" r="130" fill="#8aa47c"/>
+  <path d="M212 900c0-155 125-280 280-280s280 125 280 280v160H212z" fill="#8aa47c"/>
+  <text x="492" y="1010" text-anchor="middle" font-family="Jost, Helvetica, Arial, sans-serif" font-size="38" fill="#2c4426">Φωτογραφία — προς αντικατάσταση</text>
+</svg>
