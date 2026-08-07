@@ -36,16 +36,6 @@ const bizLD = {
   email: BIZ.email,
   priceRange: "€€",
   currenciesAccepted: "EUR",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: BIZ.street,
-    addressLocality: BIZ.area,
-    addressRegion: BIZ.city,
-    postalCode: BIZ.postal,
-    addressCountry: BIZ.country,
-  },
-  geo: { "@type": "GeoCoordinates", latitude: BIZ.lat, longitude: BIZ.lng },
-  hasMap: mapUrl,
   areaServed: AREAS.map((a) => a.name),
   isAccessibleForFree: false,
   publicAccess: true,
@@ -102,7 +92,7 @@ function head({ depth, title, desc, canonical, keywords, ld = [], type = "websit
   ${keywords ? `<meta name="keywords" content="${attr(keywords)}" />` : ""}
   <meta name="author" content="${attr(BIZ.legalName)}" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="theme-color" content="#2c4426" />
+  <meta name="theme-color" content="#4a1e47" />
   <link rel="canonical" href="${abs(canonical)}" />
 
   <meta property="og:site_name" content="${attr(BIZ.brand)}" />
@@ -161,7 +151,7 @@ function header(depth, active = "") {
   <header class="site-header" id="top">
     <nav class="nav container" id="site-nav" aria-label="Κύρια πλοήγηση">
       <a href="${r("index.html")}" class="brand" aria-label="${attr(BIZ.brand)} — Αρχική σελίδα">
-        <span class="brand-mark" aria-hidden="true">${esc(BIZ.initials)}</span>
+        <img src="${r("assets/logo.webp")}" alt="Λογότυπο Μένια Καρανάσιου" class="brand-logo" width="48" height="48" />
         <span>
           <span class="brand-name">${esc(BIZ.brand)}</span>
           <span class="brand-role">${esc(BIZ.role)}</span>
@@ -208,11 +198,12 @@ function ctaBand(depth) {
       <div>
         <p class="eyebrow">Κλείστε το ραντεβού σας</p>
         <h2 class="cta-title" id="cta-title">Ας ξεκινήσουμε από το δικό σας πιάτο.</h2>
-        <p class="cta-sub">Δια ζώσης ή διαδικτυακά, κατόπιν ραντεβού.</p>
+        <p class="cta-sub">Online, κατόπιν ραντεβού.</p>
       </div>
       <div class="cta-actions">
-        <a href="tel:${attr(BIZ.phoneIntl)}" class="btn btn-primary">Καλέστε ${esc(BIZ.phoneDisplay)}</a>
-        <a href="${r("epikoinonia.html")}" class="btn btn-ghost">Στοιχεία Επικοινωνίας</a>
+        <a href="[CALENDLY_URL]" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Κλείστε Ραντεβού (Calendly)</a>
+        <a href="tel:${attr(BIZ.phoneIntl)}" class="btn btn-ghost">Καλέστε ${esc(BIZ.phoneDisplay)}</a>
+        <a href="${r("epikoinonia.html")}" class="btn btn-ghost">Επικοινωνία</a>
       </div>
     </div>
   </section>`;
@@ -234,8 +225,8 @@ function footer(depth) {
         <p class="footer-brand-name">${esc(BIZ.brand)}</p>
         <p class="footer-tag">${esc(BIZ.tagline)}</p>
         <address class="footer-addr">
-          ${esc(BIZ.street)}, ${esc(BIZ.area)}<br />
-          ${esc(BIZ.city)}, Τ.Κ. ${esc(BIZ.postal)}
+          Online Συνεδρίες<br />
+          Πανελλαδικά &amp; Εξωτερικό
         </address>
         <div class="footer-social">
           <a href="${attr(BIZ.instagram)}" target="_blank" rel="noopener noreferrer">Instagram<span class="visually-hidden"> (ανοίγει σε νέα καρτέλα)</span></a>
@@ -362,9 +353,9 @@ function pageHome() {
   return head({
     depth,
     title: `Διαιτολόγος ${BIZ.city} | ${BIZ.brand} — Διατροφολόγος`,
-    desc: `${BIZ.name}. Εξατομικευμένα προγράμματα διατροφής, λιπομέτρηση, κλινική διατροφή, παιδική & αθλητική διατροφή. Δια ζώσης στην ${BIZ.area} και online συνεδρίες.`,
+    desc: `${BIZ.name}. Εξατομικευμένα προγράμματα διατροφής, κλινική διατροφή, παιδική & αθλητική διατροφή. Αποκλειστικά online συνεδρίες.`,
     canonical: "index.html",
-    keywords: `διαιτολόγος ${BIZ.city}, διατροφολόγος ${BIZ.area}, πρόγραμμα διατροφής, λιπομέτρηση, κλινική διατροφή, online διαιτολόγος`,
+    keywords: `διαιτολόγος ${BIZ.city}, διατροφολόγος ${BIZ.area}, πρόγραμμα διατροφής, κλινική διατροφή, online διαιτολόγος`,
     ld,
   }) +
     header(depth, "home") +
@@ -392,11 +383,11 @@ function pageHome() {
       <div class="strip-track" aria-hidden="true">
         <span>Εξατομικευμένα προγράμματα</span><span class="dot">•</span>
         <span>Κλινική διατροφή</span><span class="dot">•</span>
-        <span>Λιπομέτρηση</span><span class="dot">•</span>
+        <span>Προσβάσιμη φροντίδα</span><span class="dot">•</span>
         <span>Online συνεδρίες</span><span class="dot">•</span>
         <span>Εξατομικευμένα προγράμματα</span><span class="dot">•</span>
         <span>Κλινική διατροφή</span><span class="dot">•</span>
-        <span>Λιπομέτρηση</span><span class="dot">•</span>
+        <span>Προσβάσιμη φροντίδα</span><span class="dot">•</span>
         <span>Online συνεδρίες</span><span class="dot">•</span>
       </div>
       <button type="button" class="strip-pause" aria-pressed="false" aria-label="Παύση κίνησης κειμένου">❚❚</button>
@@ -441,7 +432,7 @@ function pageHome() {
         </div>
         <ol class="steps">
           <li class="step reveal"><p class="step-num" aria-hidden="true">1</p><h3>Πρώτη συνεδρία</h3><p>Παίρνουμε αναλυτικό ιστορικό: συνήθειες, ωράριο, εξετάσεις, στόχοι. Χωρίς κρίση για το πού βρίσκεστε σήμερα.</p></li>
-          <li class="step reveal"><p class="step-num" aria-hidden="true">2</p><h3>Μετρήσεις</h3><p>Ανάλυση σύστασης σώματος, ώστε ο σχεδιασμός να στηρίζεται σε δεδομένα και όχι σε εκτιμήσεις.</p></li>
+          <li class="step reveal"><p class="step-num" aria-hidden="true">2</p><h3>Αξιολόγηση</h3><p>Αξιολογούμε τη διατροφική σας κατάσταση με βάση εξετάσεις, ημερολόγιο διατροφής και μετρήσεις που μπορείτε να κάνετε στο σπίτι.</p></li>
           <li class="step reveal"><p class="step-num" aria-hidden="true">3</p><h3>Το πρόγραμμά σας</h3><p>Ένα πλάνο με εναλλακτικές, συνταγές και λύσεις για τις δύσκολες μέρες — όχι μια λίστα απαγορεύσεων.</p></li>
           <li class="step reveal"><p class="step-num" aria-hidden="true">4</p><h3>Παρακολούθηση</h3><p>Τακτικοί επανέλεγχοι και προσαρμογές, μέχρι το πρόγραμμα να γίνει απλώς ο τρόπος που τρώτε.</p></li>
         </ol>
@@ -676,10 +667,11 @@ function pageService(s, idx) {
         <aside class="svc-aside" aria-label="Πλαϊνές πληροφορίες">
           <div class="aside-card reveal">
             <h2>Κλείστε ραντεβού</h2>
-            <p>Δια ζώσης ή διαδικτυακά, κατόπιν ραντεβού.</p>
-            <a href="tel:${attr(BIZ.phoneIntl)}" class="btn btn-primary btn-block">${esc(BIZ.phoneDisplay)}</a>
+            <p>Αποκλειστικά διαδικτυακά, κατόπιν ραντεβού.</p>
+            <a href="[CALENDLY_URL]" class="btn btn-primary btn-block" target="_blank" rel="noopener noreferrer">Κλείστε Ραντεβού</a>
+            <a href="tel:${attr(BIZ.phoneIntl)}" class="btn btn-ghost btn-block">${esc(BIZ.phoneDisplay)}</a>
             <a href="mailto:${attr(BIZ.email)}" class="btn btn-ghost btn-block">${esc(BIZ.email)}</a>
-            <p class="aside-meta">${esc(BIZ.street)}, ${esc(BIZ.area)}<br />${esc(BIZ.city)}, ${esc(BIZ.postal)}</p>
+            <p class="aside-meta">Online Συνεδρίες<br />Πανελλαδικά &amp; Εξωτερικό</p>
           </div>
           <div class="aside-card reveal">
             <h2>Άλλες υπηρεσίες</h2>
@@ -798,9 +790,10 @@ function pageArea(a) {
           <div class="aside-card reveal">
             <h2>Στοιχεία επικοινωνίας</h2>
             <p class="aside-meta">${esc(BIZ.street)}, ${esc(BIZ.area)}<br />${esc(BIZ.city)}, ${esc(BIZ.postal)}</p>
-            <a href="tel:${attr(BIZ.phoneIntl)}" class="btn btn-primary btn-block">${esc(BIZ.phoneDisplay)}</a>
+            <a href="[CALENDLY_URL]" class="btn btn-primary btn-block" target="_blank" rel="noopener noreferrer">Κλείστε Ραντεβού</a>
+            <a href="tel:${attr(BIZ.phoneIntl)}" class="btn btn-ghost btn-block">${esc(BIZ.phoneDisplay)}</a>
             <a href="mailto:${attr(BIZ.email)}" class="btn btn-ghost btn-block">${esc(BIZ.email)}</a>
-            <p class="aside-meta">${esc(BIZ.hours)}</p>
+            <p class="aside-meta">Online Συνεδρίες</p>
           </div>
         </aside>
       </div>
@@ -978,7 +971,7 @@ function pageContact() {
 
           <ul class="contact-list">
             <li class="reveal"><span class="contact-label">Ωράριο</span><span class="contact-value">${esc(BIZ.hoursShort)}<br /><em>κατόπιν ραντεβού</em></span></li>
-            <li class="reveal"><span class="contact-label">Διεύθυνση</span><span class="contact-value">${esc(BIZ.street)}, ${esc(BIZ.area)}<br />${esc(BIZ.city)}, Τ.Κ. ${esc(BIZ.postal)}</span></li>
+            <li class="reveal"><span class="contact-label">Διεύθυνση</span><span class="contact-value">Online Συνεδρίες<br /><em>Πανελλαδικά &amp; Εξωτερικό</em></span></li>
             <li class="reveal"><span class="contact-label">Τηλέφωνο</span><span class="contact-value"><a href="tel:${attr(BIZ.phoneIntl)}">${esc(BIZ.phoneDisplay)}</a></span></li>
             <li class="reveal"><span class="contact-label">Email</span><span class="contact-value"><a href="mailto:${attr(BIZ.email)}">${esc(BIZ.email)}</a></span></li>
             <li class="reveal"><span class="contact-label">Social</span><span class="contact-value"><a href="${attr(BIZ.instagram)}" target="_blank" rel="noopener noreferrer">Instagram</a> · <a href="${attr(BIZ.facebook)}" target="_blank" rel="noopener noreferrer">Facebook</a> · <a href="${attr(BIZ.tiktok)}" target="_blank" rel="noopener noreferrer">TikTok</a><br /><em>${esc(BIZ.social)}</em></span></li>
@@ -1053,13 +1046,14 @@ function pageContact() {
       </div>
     </section>
 
-    <section class="contact" style="padding-top:0" aria-labelledby="map-title">
+    <section class="contact" style="padding-top:0" aria-labelledby="calendly-title">
       <div class="container">
-        <h2 class="section-title reveal" id="map-title">Πού θα μας βρείτε</h2>
-        <div class="contact-map reveal">
-          <iframe title="Χάρτης Google με τη θέση του γραφείου: ${attr(BIZ.street + ", " + BIZ.area)}" src="${mapUrl}&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <h2 class="section-title reveal" id="calendly-title">Ή κλείστε ραντεβού online</h2>
+        <p class="reveal">Κλείστε απευθείας ραντεβού μέσω Calendly, χωρίς αναμονή.</p>
+        <div class="contact-actions reveal" style="margin-top:2rem">
+          <a href="[CALENDLY_URL]" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Κλείστε ραντεβού (Calendly)</a>
+          <a href="#form-title" class="btn btn-ghost">Φόρμα επικοινωνίας</a>
         </div>
-        <p class="hint" style="margin-top:0.8rem">Αν ο χάρτης δεν φορτώνει, <a href="${mapUrl}" target="_blank" rel="noopener noreferrer">ανοίξτε τη διεύθυνση στους Χάρτες Google</a>.</p>
       </div>
     </section>
   </main>` +

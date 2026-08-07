@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://[domain].gr/sitemap.xml
+Sitemap: https://www.meniakaranasiou.gr/sitemap.xml
 
