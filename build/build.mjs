@@ -109,7 +109,7 @@ function head({ depth, title, desc, canonical, keywords, ld = [], type = "websit
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="${r("styles.css")}" />
+  <link rel="stylesheet" href="${r("styles.css")}?v=2" />
   <script>
     document.documentElement.classList.remove("no-js");
     try {
