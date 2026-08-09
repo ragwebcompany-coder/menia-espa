@@ -112,74 +112,11 @@
         </div>
 
         <div>
-          <h2 class="section-title reveal" id="form-title">Φόρμα επικοινωνίας</h2>
-          <form class="form" data-validate data-mailto="meniakaranasiou@gmail.com" aria-labelledby="form-title" novalidate>
-            <p class="form-status" role="alert" aria-live="assertive"></p>
-
-            <p class="field-hint">Τα πεδία με <span class="req" aria-hidden="true">*</span> είναι υποχρεωτικά.</p>
-
-            <div class="field">
-              <label for="f-name">Ονοματεπώνυμο <span class="req" aria-hidden="true">*</span><span class="visually-hidden">(υποχρεωτικό)</span></label>
-              <input type="text" id="f-name" name="name" autocomplete="name" required
-                     data-error="Συμπληρώστε το ονοματεπώνυμό σας."
-                     aria-describedby="f-name-error" />
-              <p class="field-error" id="f-name-error"></p>
-            </div>
-
-            <div class="field">
-              <label for="f-email">Email <span class="req" aria-hidden="true">*</span><span class="visually-hidden">(υποχρεωτικό)</span></label>
-              <input type="email" id="f-email" name="email" autocomplete="email" required
-                     data-error="Συμπληρώστε μια έγκυρη διεύθυνση email, π.χ. onoma@example.gr."
-                     aria-describedby="f-email-hint f-email-error" />
-              <p class="hint" id="f-email-hint">Θα χρησιμοποιηθεί μόνο για να σας απαντήσω.</p>
-              <p class="field-error" id="f-email-error"></p>
-            </div>
-
-            <div class="field">
-              <label for="f-phone">Τηλέφωνο</label>
-              <input type="tel" id="f-phone" name="phone" autocomplete="tel" aria-describedby="f-phone-hint" />
-              <p class="hint" id="f-phone-hint">Προαιρετικό, αν προτιμάτε τηλεφωνική επικοινωνία.</p>
-            </div>
-
-            <div class="field">
-              <label for="f-subject">Θέμα</label>
-              <select id="f-subject" name="subject">
-                <option>Ραντεβού στο γραφείο</option>
-                <option>Online συνεδρία</option>
-                <option>Πληροφορίες για υπηρεσία</option>
-                <option>Άλλο</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="f-message">Μήνυμα <span class="req" aria-hidden="true">*</span><span class="visually-hidden">(υποχρεωτικό)</span></label>
-              <textarea id="f-message" name="message" required rows="6"
-                        data-error="Γράψτε μας λίγα λόγια για το αίτημά σας."
-                        aria-describedby="f-message-error"></textarea>
-              <p class="field-error" id="f-message-error"></p>
-            </div>
-
-            <div class="field checkbox">
-              <input type="checkbox" id="f-consent" name="consent" required
-                     data-error="Χρειάζεται η συγκατάθεσή σας για να επεξεργαστούμε το αίτημα."
-                     aria-describedby="f-consent-error" />
-              <label for="f-consent">Συναινώ στην επεξεργασία των στοιχείων μου για να απαντηθεί το αίτημά μου. <span class="req" aria-hidden="true">*</span></label>
-            </div>
-            <p class="field-error" id="f-consent-error"></p>
-
-            <p><button type="submit" class="btn btn-primary">Αποστολή μηνύματος</button></p>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact" style="padding-top:0" aria-labelledby="calendly-title">
-      <div class="container">
-        <h2 class="section-title reveal" id="calendly-title">Ή κλείστε ραντεβού online</h2>
-        <p class="reveal">Κλείστε απευθείας ραντεβού μέσω Calendly, χωρίς αναμονή.</p>
-        <div class="contact-actions reveal" style="margin-top:2rem">
-          <a href="[CALENDLY_URL]" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Κλείστε ραντεβού (Calendly)</a>
-          <a href="#form-title" class="btn btn-ghost">Φόρμα επικοινωνίας</a>
+          <h2 class="section-title reveal" id="form-title">Κλείστε Ραντεβού</h2>
+          <!-- Calendly inline widget begin -->
+          <div class="calendly-inline-widget" data-url="[CALENDLY_URL]" style="min-width:320px;height:700px;"></div>
+          <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+          <!-- Calendly inline widget end -->
         </div>
       </div>
     </section>
