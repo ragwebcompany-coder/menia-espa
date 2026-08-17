@@ -14,29 +14,38 @@
 
   /* ---------- Μενού κινητού ---------- */
   var toggle = document.querySelector(".nav-toggle");
-  var links = document.querySelector(".nav-links");
+  var nav = document.querySelector(".main-nav");
+  var overlay = document.querySelector(".nav-overlay");
 
   function setNav(open) {
     body.classList.toggle("nav-open", open);
+    if (overlay) overlay.hidden = !open;
     if (toggle) {
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       toggle.setAttribute("aria-label", open ? "Κλείσιμο μενού" : "Άνοιγμα μενού");
     }
   }
 
-  if (toggle && links) {
+  if (toggle && nav) {
     toggle.addEventListener("click", function () {
       var open = !body.classList.contains("nav-open");
       setNav(open);
       if (open) {
-        var first = links.querySelector("a");
+        var first = nav.querySelector("a");
         if (first) first.focus();
       }
     });
 
-    links.addEventListener("click", function (e) {
+    nav.addEventListener("click", function (e) {
       if (e.target.closest("a")) setNav(false);
     });
+
+    if (overlay) {
+      overlay.addEventListener("click", function () {
+        setNav(false);
+        toggle.focus();
+      });
+    }
 
     // Escape κλείνει το μενού και επιστρέφει την εστίαση στο κουμπί
     document.addEventListener("keydown", function (e) {
@@ -44,28 +53,6 @@
         setNav(false);
         toggle.focus();
       }
-    });
-  }
-
-  /* ---------- Σκιά κεφαλίδας κατά την κύλιση ---------- */
-  var header = document.querySelector(".site-header");
-  if (header) {
-    var onScroll = function () {
-      header.classList.toggle("scrolled", window.scrollY > 24);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-  }
-
-  /* ---------- Κινούμενη ταινία: χειριστήριο παύσης (WCAG 2.2.2) ---------- */
-  var strip = document.querySelector(".strip");
-  var stripBtn = document.querySelector(".strip-pause");
-  if (strip && stripBtn) {
-    stripBtn.addEventListener("click", function () {
-      var paused = strip.classList.toggle("is-paused");
-      stripBtn.setAttribute("aria-pressed", paused ? "true" : "false");
-      stripBtn.setAttribute("aria-label", paused ? "Συνέχιση κίνησης κειμένου" : "Παύση κίνησης κειμένου");
-      stripBtn.textContent = paused ? "▶" : "❚❚";
     });
   }
 
@@ -152,90 +139,6 @@
   }
 
   apply();
-
-  /* ============================================================
-     Φόρμα επικοινωνίας — validation με ανακοίνωση σε screen readers
-     ============================================================ */
-  var form = document.querySelector("form[data-validate]");
-  if (form) {
-    var status = form.querySelector(".form-status");
-
-    var showError = function (input, message) {
-      var box = document.getElementById(input.id + "-error");
-      input.setAttribute("aria-invalid", "true");
-      if (box) box.textContent = message;
-    };
-    var clearError = function (input) {
-      var box = document.getElementById(input.id + "-error");
-      input.removeAttribute("aria-invalid");
-      if (box) box.textContent = "";
-    };
-
-    form.addEventListener("submit", function (e) {
-      var fields = form.querySelectorAll("[required]");
-      var invalid = [];
-
-      Array.prototype.forEach.call(fields, function (input) {
-        clearError(input);
-        var value = (input.value || "").trim();
-        var ok = input.type === "checkbox" ? input.checked : value !== "";
-        if (ok && input.type === "email") ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
-        if (!ok) {
-          invalid.push(input);
-          showError(input, input.getAttribute("data-error") || "Το πεδίο είναι υποχρεωτικό.");
-        }
-      });
-
-      if (invalid.length) {
-        e.preventDefault();
-        if (status) {
-          status.className = "form-status err";
-          status.textContent = "Το μήνυμα δεν στάλθηκε: ελέγξτε " + invalid.length +
-            (invalid.length === 1 ? " πεδίο που επισημαίνεται παρακάτω." : " πεδία που επισημαίνονται παρακάτω.");
-        }
-        invalid[0].focus();
-        return;
-      }
-
-      // Χωρίς ρυθμισμένο endpoint, το μήνυμα ανοίγει στο πρόγραμμα
-      // ηλεκτρονικού ταχυδρομείου του χρήστη.
-      var mailto = form.getAttribute("data-mailto");
-      if (mailto && !form.getAttribute("action")) {
-        e.preventDefault();
-        var get = function (name) {
-          var el = form.querySelector("[name='" + name + "']");
-          return el ? (el.value || "").trim() : "";
-        };
-        var subject = "Αίτημα από τον ιστότοπο — " + (get("subject") || "Επικοινωνία");
-        var lines = [
-          "Ονοματεπώνυμο: " + get("name"),
-          "Email: " + get("email"),
-          "Τηλέφωνο: " + (get("phone") || "—"),
-          "Θέμα: " + get("subject"),
-          "",
-          get("message"),
-        ];
-        window.location.href = "mailto:" + mailto +
-          "?subject=" + encodeURIComponent(subject) +
-          "&body=" + encodeURIComponent(lines.join("\n"));
-
-        if (status) {
-          status.className = "form-status ok";
-          status.textContent = "Άνοιξε το πρόγραμμα email σας με συμπληρωμένο το μήνυμα. " +
-            "Αν δεν άνοιξε, στείλτε το μήνυμά σας απευθείας στο " + mailto + ".";
-        }
-      }
-    });
-
-    // Καθαρισμός σφάλματος μόλις ο χρήστης διορθώσει το πεδίο
-    form.addEventListener("input", function (e) {
-      if (e.target.hasAttribute("required") && e.target.getAttribute("aria-invalid") === "true") {
-        var value = (e.target.value || "").trim();
-        var ok = e.target.type === "checkbox" ? e.target.checked : value !== "";
-        if (ok) clearError(e.target);
-      }
-    });
-  }
 
   /* ============================================================
      Εμφάνιση στοιχείων κατά την κύλιση

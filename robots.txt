@@ -1,5 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://www.meniakaranasiou.gr/sitemap.xml
-
