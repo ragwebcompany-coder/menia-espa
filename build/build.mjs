@@ -10,7 +10,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
-  SITE, IMG, NAV, HOME, ABOUT, BIO, METHOD, SERVICES, CONTACT, A11Y, FUNDING, FOOTER,
+  SITE, IMG, NAV, FOOTER_NAV, HOME, ABOUT, BIO, METHOD, SERVICES, CONTACT,
+  FAQ, PRIVACY, PENDING, A11Y, FUNDING, FOOTER,
 } from "./data.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -20,6 +21,10 @@ const warnings = [];
    Βοηθητικά
    ============================================================ */
 const url = (file) => `${SITE.BASE}/${file === "index.html" ? "" : file}`;
+/* Το & πρέπει να γράφεται &amp; μέσα σε HTML attribute (π.χ. query strings). */
+const esc = (v) => String(v).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+/* Σταθερά id ενοτήτων για τον πίνακα περιεχομένων της πολιτικής απορρήτου. */
+const slug = (h) => "sec-" + (h.match(/^\d+/) || ["1"])[0];
 const pending = (v) => typeof v === "string" && /\[[A-Z_]+\]/.test(v);
 
 function check(label, value) {
@@ -31,7 +36,13 @@ function check(label, value) {
 function header(current) {
   const items = NAV.map((n) => {
     const active = n.file === current ? ' aria-current="page"' : "";
-    return `<li><a class="nav-link" href="${n.file}"${active}>${n.label}</a></li>`;
+    const cls = `nav-link${n.cta ? " nav-cta" : ""}`;
+    if (n.external) {
+      /* Ο σκοπός του συνδέσμου και το άνοιγμα σε νέα καρτέλα δηλώνονται
+         και στους αναγνώστες οθόνης (WCAG 2.4.4 / 3.2.5). */
+      return `<li><a class="${cls}" href="${esc(n.href)}" target="_blank" rel="noopener noreferrer">${n.label}<span class="visually-hidden"> (ανοίγει σε νέα καρτέλα)</span></a></li>`;
+    }
+    return `<li><a class="${cls}" href="${n.file}"${active}>${n.label}</a></li>`;
   }).join("\n            ");
 
   return `  <header class="site-header" id="top">
@@ -71,13 +82,7 @@ function footer() {
 
       <nav aria-label="Δευτερεύουσα πλοήγηση">
         <ul class="footer-nav">
-          <li><a href="liga-logia.html">Ας Συστηθούμε</a></li>
-          <li><a href="biografiko.html">Βιογραφικό</a></li>
-          <li><a href="methodos.html">E-DIET</a></li>
-          <li><a href="ypiresies.html">Υπηρεσίες</a></li>
-          <li><a href="epikoinonia.html">Επικοινωνία</a></li>
-          <li><a href="prosvasimotita.html">Προσβασιμότητα</a></li>
-          <li><a href="chrimatodotisi.html">Χρηματοδότηση</a></li>
+          ${FOOTER_NAV.map((n) => `<li><a href="${n.file}">${n.label}</a></li>`).join("\n          ")}
         </ul>
       </nav>
 
@@ -140,7 +145,7 @@ function a11yWidget() {
 }
 
 /* ---------- σκελετός σελίδας ---------- */
-function shell({ file, title, desc, keywords = "", main, schema = [], extraHead = "" }) {
+function shell({ file, title, desc, keywords = "", main, schema = [], extraHead = "", noindex = false }) {
   const canonical = url(file);
   const jsonld = schema.map((s) => `  <script type="application/ld+json">${JSON.stringify(s)}</script>`).join("\n");
 
@@ -152,7 +157,7 @@ function shell({ file, title, desc, keywords = "", main, schema = [], extraHead 
   <title>${title}</title>
   <meta name="description" content="${desc}" />${keywords ? `\n  <meta name="keywords" content="${keywords}" />` : ""}
   <meta name="author" content="${SITE.name}, Διαιτολόγος – Διατροφολόγος" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="robots" content="${noindex ? "noindex, follow" : "index, follow, max-image-preview:large"}" />
   <meta name="theme-color" content="#9a1cab" />
   <link rel="canonical" href="${canonical}" />
 
@@ -171,7 +176,7 @@ function shell({ file, title, desc, keywords = "", main, schema = [], extraHead 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
   <script>
     document.documentElement.classList.remove("no-js");
     try {
@@ -203,7 +208,7 @@ ${main}
 ${footer()}
 
 ${a11yWidget()}
-  <script src="main.js?v=5" defer></script>
+  <script src="main.js?v=6" defer></script>
 </body>
 </html>
 `;
@@ -232,6 +237,12 @@ const contactColumn = (level = "h2") => `        <div>
               <a href="${SITE.instagram}" target="_blank" rel="noopener noreferrer">
                 <img src="${IMG.iconInstagram}" alt="" width="27" height="27" />
                 <span class="visually-hidden">Instagram (ανοίγει σε νέα καρτέλα)</span>
+              </a>
+            </li>
+            <li>
+              <a href="${esc(SITE.facebook)}" target="_blank" rel="noopener noreferrer">
+                <img src="${IMG.iconFacebook}" alt="" width="27" height="27" />
+                <span class="visually-hidden">Facebook (ανοίγει σε νέα καρτέλα)</span>
               </a>
             </li>
             <li>
@@ -268,7 +279,24 @@ ${embed}
             <a class="btn btn-round" href="tel:${SITE.phoneIntl}">Τηλεφώνησέ μου</a>
             <a class="btn btn-outline" href="mailto:${SITE.email}">Στείλε email</a>
           </div>
+${consentBlock()}
         </div>`;
+}
+
+/* Ενημέρωση συγκατάθεσης για δεδομένα υγείας (GDPR άρθρο 9 §2α).
+   Το πεδίο επιλογής είναι απενεργοποιημένο και επεξηγηματικό: η
+   συγκατάθεση δίνεται γραπτώς πριν την πρώτη συνεδρία, όχι εδώ. */
+function consentBlock() {
+  return `          <div class="consent">
+            <h3 class="consent-title">${PRIVACY.consentTitle}</h3>
+            <p>${PRIVACY.consentText}</p>
+            <p class="consent-sample">
+              <span class="consent-box" aria-hidden="true"></span>
+              <span>${PRIVACY.consentCheckbox}</span>
+            </p>
+            <p class="consent-note">Δείγμα της δήλωσης που θα σου ζητηθεί να υπογράψεις.
+              Διάβασε αναλυτικά την <a href="politiki-aporritou.html">Πολιτική Απορρήτου</a>.</p>
+          </div>`;
 }
 
 /* ============================================================
@@ -380,7 +408,7 @@ ${banner()}
     </section>
   </main>`;
 
-  return shell({ file: "liga-logia.html", title: ABOUT.title, desc: ABOUT.desc, main });
+  return shell({ file: "liga-logia.html", title: ABOUT.title, desc: ABOUT.desc, keywords: ABOUT.keywords, main });
 }
 
 function pageBio() {
@@ -403,12 +431,12 @@ ${banner()}
       jobTitle: "Διαιτολόγος – Διατροφολόγος",
       url: url("biografiko.html"),
       alumniOf: { "@type": "CollegeOrUniversity", name: "Ανώτατο Τεχνολογικό Εκπαιδευτικό Ίδρυμα Θεσσαλονίκης" },
-      memberOf: { "@type": "Organization", name: "Ένωση Διαιτολόγων Διατροφολόγων Ελλάδας" },
+      memberOf: { "@type": "Organization", name: SITE.hdnaName, url: SITE.hdna },
       worksFor: { "@id": `${SITE.BASE}/#praxis` },
     },
   ];
 
-  return shell({ file: "biografiko.html", title: BIO.title, desc: BIO.desc, main, schema });
+  return shell({ file: "biografiko.html", title: BIO.title, desc: BIO.desc, keywords: BIO.keywords, main, schema });
 }
 
 function pageMethod() {
@@ -429,7 +457,7 @@ ${banner()}
     </section>
   </main>`;
 
-  return shell({ file: "methodos.html", title: METHOD.title, desc: METHOD.desc, main });
+  return shell({ file: "methodos.html", title: METHOD.title, desc: METHOD.desc, keywords: METHOD.keywords, main });
 }
 
 function pageServices() {
@@ -486,7 +514,7 @@ ${prices}
     },
   ];
 
-  return shell({ file: "ypiresies.html", title: SERVICES.title, desc: SERVICES.desc, main, schema });
+  return shell({ file: "ypiresies.html", title: SERVICES.title, desc: SERVICES.desc, keywords: SERVICES.keywords, main, schema });
 }
 
 function pageContact() {
@@ -510,8 +538,193 @@ ${bookingBlock("h2")}
     file: "epikoinonia.html",
     title: CONTACT.title,
     desc: CONTACT.desc,
+    keywords: CONTACT.keywords,
     main,
     extraHead,
+  });
+}
+
+/* Μετατροπή απάντησης HTML σε καθαρό κείμενο για το schema.org.
+   Οι παύλες λίστας/παραγράφων γίνονται σημεία στίξης, ώστε το κείμενο
+   να μη «κολλάει» σε μία πρόταση. */
+function plain(htmlText) {
+  return htmlText
+    .replace(/<\/li>/g, "; ")
+    .replace(/<\/p>/g, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/\s*;\s*$/, "")
+    .replace(/;\s*\./g, ".")
+    .trim();
+}
+
+/* ---------- Συχνές ερωτήσεις ---------- */
+/* Ακορντεόν με <details>/<summary>: λειτουργεί με πληκτρολόγιο και
+   αναγνώστες οθόνης χωρίς JavaScript (WCAG 2.1.1 / 4.1.2). */
+function pageFaq() {
+  const items = FAQ.items
+    .map(
+      (it, i) => `          <details class="faq-item" name="faq">
+            <summary><span class="faq-num" aria-hidden="true">${i + 1}.</span> ${it.q}</summary>
+            <div class="faq-answer">${it.a}</div>
+          </details>`
+    )
+    .join("\n");
+
+  const main = `  <main id="main">
+${banner()}
+    <section class="section section-white" aria-labelledby="faq-title">
+      <div class="sheet prose">
+        <h1 class="page-title text-center" id="faq-title">${FAQ.h1}</h1>
+        <p class="lead text-center">${FAQ.lead}</p>
+
+        <div class="faq-list">
+${items}
+        </div>
+
+        <p class="faq-cta-text">Δεν βρήκες την απάντηση που έψαχνες;</p>
+        <div class="panel-actions">
+          <a class="btn btn-round" href="epikoinonia.html">Επικοινώνησε μαζί μου</a>
+          <a class="btn btn-outline" href="${esc(SITE.calendly)}" target="_blank" rel="noopener noreferrer">Κλείσε ραντεβού<span class="visually-hidden"> (ανοίγει σε νέα καρτέλα)</span></a>
+        </div>
+      </div>
+    </section>
+  </main>`;
+
+  const schema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQ.items.map((it) => ({
+        "@type": "Question",
+        name: it.q,
+        acceptedAnswer: { "@type": "Answer", text: plain(it.a) },
+      })),
+    },
+  ];
+
+  return shell({
+    file: "syxnes-erotiseis.html",
+    title: FAQ.title,
+    desc: FAQ.desc,
+    keywords: FAQ.keywords,
+    main,
+    schema,
+  });
+}
+
+/* ---------- Πολιτική απορρήτου ---------- */
+function privacyBlock(b) {
+  if (b.type === "h3") return `            <h3>${b.text}</h3>`;
+  if (b.type === "p") return `            <p>${b.text}</p>`;
+  if (b.type === "ul")
+    return `            <ul class="ticks">\n              ${b.items
+      .map((i) => `<li>${i}</li>`)
+      .join("\n              ")}\n            </ul>`;
+  if (b.type === "table")
+    return `            <div class="table-scroll">
+              <table class="data-table">
+                <caption class="visually-hidden">${b.caption}</caption>
+                <thead>
+                  <tr>${b.head.map((h) => `<th scope="col">${h}</th>`).join("")}</tr>
+                </thead>
+                <tbody>
+                  ${b.rows
+                    .map(
+                      (r) =>
+                        `<tr><th scope="row">${r[0]}</th>${r
+                          .slice(1)
+                          .map((c) => `<td>${c}</td>`)
+                          .join("")}</tr>`
+                    )
+                    .join("\n                  ")}
+                </tbody>
+              </table>
+            </div>`;
+  return "";
+}
+
+function pagePrivacy() {
+  const toc = PRIVACY.sections
+    .map((sec) => `<li><a href="#${sec.id || slug(sec.h)}">${sec.h}</a></li>`)
+    .join("\n                ");
+
+  /* Τα id των ενοτήτων παράγονται ντετερμινιστικά ώστε να δουλεύει ο πίνακας
+     περιεχομένων· όσες ενότητες έχουν δικό τους id το διατηρούν. */
+  const sectionsWithIds = PRIVACY.sections
+    .map(
+      (sec) => `            <h2 id="${sec.id || slug(sec.h)}">${sec.h}</h2>
+${sec.blocks.map(privacyBlock).join("\n")}`
+    )
+    .join("\n\n");
+
+  const main = `  <main id="main">
+${banner()}
+    <section class="section section-white">
+      <div class="sheet">
+        <div class="doc-grid">
+          <article class="prose">
+            <h1 class="page-title">${PRIVACY.h1}</h1>
+            <p class="lead">${PRIVACY.lead}</p>
+            <p class="privacy-updated">Τελευταία ενημέρωση:
+              <time datetime="${SITE.privacyUpdated}">${SITE.privacyUpdatedText}</time></p>
+
+${sectionsWithIds}
+          </article>
+
+          <aside aria-label="Συνοπτικά">
+            <div class="aside-card">
+              <h2>Περιεχόμενα</h2>
+              <ul class="toc">
+                ${toc}
+              </ul>
+            </div>
+            <div class="aside-card">
+              <h2>Άσκηση δικαιωμάτων</h2>
+              <p>Email: <a href="mailto:${SITE.email}">${SITE.email}</a><br />
+                 Τηλέφωνο: <a href="tel:${SITE.phoneIntl}">${SITE.phoneDisplay}</a></p>
+              <a href="epikoinonia.html" class="btn btn-round">Επικοινωνία</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>`;
+
+  return shell({ file: "politiki-aporritou.html", title: PRIVACY.title, desc: PRIVACY.desc, main });
+}
+
+/* ---------- Σελίδες σε αναμονή (Blog, Κριτικές) ---------- */
+function pagePending(cfg) {
+  const main = `  <main id="main">
+${banner()}
+    <section class="section section-white">
+      <div class="sheet prose text-center">
+        <p class="eyebrow">Σύντομα κοντά σου</p>
+        <h1 class="page-title">${cfg.h1}</h1>
+        <p class="lead">${cfg.lead}</p>
+        <div class="pending-card">
+          ${cfg.body.map((b) => `<p>${b}</p>`).join("\n          ")}
+        </div>
+        <div class="panel-actions panel-actions-center">
+          ${cfg.links
+            .map(
+              (l, i) =>
+                `<a class="btn ${i === 0 ? "btn-round" : "btn-outline"}" href="${l.href}">${l.label}</a>`
+            )
+            .join("\n          ")}
+        </div>
+      </div>
+    </section>
+  </main>`;
+
+  return shell({
+    file: cfg.file,
+    title: cfg.title,
+    desc: cfg.desc,
+    main,
+    noindex: true,
   });
 }
 
@@ -543,6 +756,7 @@ ${banner()}
               <li>Το μενού του κινητού αποκρύπτεται πλήρως (<code>visibility: hidden</code>) όταν είναι κλειστό, ώστε η εστίαση να μη «χάνεται» εκτός οθόνης</li>
               <li>Το πλήκτρο <kbd>Esc</kbd> κλείνει το μενού και το πάνελ προσβασιμότητας και επαναφέρει την εστίαση στο κουμπί που τα άνοιξε</li>
               <li>Η τρέχουσα σελίδα δηλώνεται προγραμματιστικά με <code>aria-current="page"</code></li>
+              <li>Κάθε σύνδεσμος που ανοίγει σε νέα καρτέλα — όπως το «Κλείσε ραντεβού» της πλοήγησης — το δηλώνει ρητά στο προσβάσιμο όνομά του (WCAG 3.2.5)</li>
             </ul>
 
             <h3>Εναλλακτικό κείμενο εικόνων</h3>
@@ -553,6 +767,9 @@ ${banner()}
 
             <h3>Σημασιολογική δομή</h3>
             <p>Οι σελίδες χρησιμοποιούν σωστά σημασιολογικά στοιχεία HTML — <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code> — και ιεραρχία επικεφαλίδων <code>&lt;h1&gt;</code> έως <code>&lt;h6&gt;</code> χωρίς κενά επίπεδα. Κάθε σελίδα έχει μία μοναδική <code>&lt;h1&gt;</code>, μοναδικό τίτλο και δηλωμένη γλώσσα (<code>lang="el"</code>). Οι λίστες υπηρεσιών και τιμών αποδίδονται με πραγματικές λίστες, όχι με αλλαγές γραμμής.</p>
+
+            <h3>Πτυσσόμενες ερωτήσεις &amp; πίνακες</h3>
+            <p>Οι συχνές ερωτήσεις αποδίδονται με τα εγγενή στοιχεία <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>: ανοίγουν και κλείνουν με <kbd>Enter</kbd> ή <kbd>Space</kbd>, η κατάστασή τους ανακοινώνεται αυτόματα από τους αναγνώστες οθόνης και το περιεχόμενό τους παραμένει διαθέσιμο ακόμη και χωρίς JavaScript. Ο πίνακας νομικών βάσεων στην πολιτική απορρήτου χρησιμοποιεί πραγματικά <code>&lt;th scope&gt;</code> για γραμμές και στήλες, με λεζάντα για τους αναγνώστες οθόνης, και κυλίεται οριζόντια μέσα στο δικό του πλαίσιο ώστε η σελίδα να μη χρειάζεται ποτέ οριζόντια κύλιση.</p>
 
             <h3>Μέγεθος γραμματοσειράς &amp; μεγέθυνση</h3>
             <p>Το κείμενο μπορεί να μεγεθυνθεί έως <strong>200%</strong> από τον browser χωρίς απώλεια περιεχομένου ή λειτουργικότητας και χωρίς οριζόντια κύλιση. Όλα τα μεγέθη ορίζονται σε σχετικές μονάδες (<code>rem</code>) και τα σημεία θραύσης της διάταξης σε <code>em</code>, ώστε το layout να αναδιατάσσεται σωστά κατά τη μεγέθυνση. Η διάταξη λειτουργεί σε πλάτος ισοδύναμο με 320 pixel.</p>
@@ -581,8 +798,12 @@ ${banner()}
             <ul class="ticks">
               <li>Το ημερολόγιο online ραντεβού στη σελίδα Επικοινωνίας παρέχεται από τρίτο μέρος (Calendly) μέσα σε ενσωματωμένο πλαίσιο και <strong>δεν βρίσκεται υπό τον έλεγχό μας</strong>· ενδέχεται να μην πληροί πλήρως τα κριτήρια AA. Για τον λόγο αυτό δίνεται πάντοτε ισοδύναμη εναλλακτική διαδρομή: κλείσιμο ραντεβού τηλεφωνικά ή με email, με τα στοιχεία σε μορφή κειμένου διπλά στο πλαίσιο.</li>
               <li>Η αφίσα δημοσιότητας αποτελεί εξ ορισμού εικόνα κειμένου, καθώς πρόκειται για τυποποιημένο έντυπο τρίτου φορέα που δεν επιτρέπεται να τροποποιηθεί εικαστικά. Ολόκληρο το περιεχόμενό της διατίθεται σε μορφή HTML, ενώ το PDF έχει καταστεί επισημασμένο και αναγνώσιμο από υποστηρικτικές τεχνολογίες.</li>
+              <li>Οι ενότητες «Blog» και «Κριτικές» βρίσκονται σε αναμονή περιεχομένου. Οι σελίδες τους είναι πλήρως προσβάσιμες, εξηγούν την κατάστασή τους σε κείμενο και προσφέρουν εναλλακτικές διαδρομές, ενώ παραμένουν εκτός ευρετηρίασης (<code>noindex</code>) μέχρι να δημοσιευτεί περιεχόμενο.</li>
               <li>Η γραμματοσειρά Comfortaa φορτώνεται από το Google Fonts. Σε περίπτωση αποτυχίας φόρτωσης, ο ιστότοπος εμφανίζεται κανονικά με τις εναλλακτικές γραμματοσειρές του συστήματος.</li>
             </ul>
+
+            <h2>Προσωπικά δεδομένα</h2>
+            <p>Ο τρόπος συλλογής και επεξεργασίας των προσωπικών σας δεδομένων — και ιδίως των δεδομένων υγείας — περιγράφεται αναλυτικά στην <a href="politiki-aporritou.html">Πολιτική Απορρήτου</a>. Αν χρειάζεστε το κείμενό της σε εναλλακτική μορφή, μας το ζητάτε και σας το στέλνουμε.</p>
 
             <h2>Υποβολή παρατηρήσεων &amp; διαδικασία εκτέλεσης</h2>
             <p>Αν συναντήσετε εμπόδιο προσβασιμότητας ή χρειάζεστε κάποιο περιεχόμενο σε εναλλακτική μορφή, επικοινωνήστε μαζί μας:</p>
@@ -669,10 +890,15 @@ const PAGES = [
   ["biografiko.html", pageBio(), "0.8", "yearly"],
   ["methodos.html", pageMethod(), "0.8", "yearly"],
   ["ypiresies.html", pageServices(), "0.9", "monthly"],
+  ["syxnes-erotiseis.html", pageFaq(), "0.8", "monthly"],
   ["epikoinonia.html", pageContact(), "0.9", "monthly"],
+  ["politiki-aporritou.html", pagePrivacy(), "0.4", "yearly"],
   ["prosvasimotita.html", pageAccessibility(), "0.5", "yearly"],
   ["chrimatodotisi.html", pageFunding(), "0.5", "yearly"],
 ];
+
+/* Σελίδες σε αναμονή: παράγονται, αλλά μένουν εκτός sitemap όσο φέρουν noindex. */
+const PENDING_PAGES = PENDING.map((cfg) => [cfg.file, pagePending(cfg)]);
 
 function write(rel, content) {
   const abs = join(ROOT, rel);
@@ -705,6 +931,7 @@ Sitemap: ${SITE.BASE}/sitemap.xml
 check("SITE.calendly (σύνδεσμος ημερολογίου ραντεβού)", SITE.calendly);
 
 const written = PAGES.map(([file, html]) => write(file, html));
+PENDING_PAGES.forEach(([file, html]) => written.push(write(file, html)));
 written.push(write("sitemap.xml", sitemap));
 written.push(write("robots.txt", robots));
 

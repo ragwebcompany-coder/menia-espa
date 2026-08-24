@@ -180,24 +180,40 @@ summary:focus-visible,
 .nav-list {
   display: flex;
   align-items: center;
+  /* Με 9 στοιχεία η πλοήγηση μπορεί να σπάσει σε δεύτερη σειρά· η
+     στοίχιση δεξιά κρατά το σπάσιμο τακτοποιημένο. */
   flex-wrap: wrap;
-  gap: .5rem;
+  justify-content: flex-end;
+  gap: .4375rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .nav-link {
   display: block;
-  padding: .625rem .9375rem;
+  padding: .5rem .75rem;
   border: 1px solid transparent;
   border-radius: 50px;
   color: var(--ink);
   background: transparent;
-  font-size: 1.125rem;
+  font-size: .9375rem;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
   transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+/* Το «Κλείσε ραντεβού» τονίζεται ως κύρια ενέργεια — με λιλά που πληροί
+   4.5:1 με λευκό κείμενο, όχι με το διακοσμητικό #bf7eba. */
+.nav-link.nav-cta {
+  background: var(--lilac-btn);
+  border-color: var(--lilac-btn);
+  color: var(--white);
+}
+.nav-link.nav-cta:hover,
+.nav-link.nav-cta:focus {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: var(--white);
 }
 .nav-link:hover,
 .nav-link:focus {
@@ -544,6 +560,140 @@ summary:focus-visible,
 .a11y-note img { width: 3rem; height: 3rem; flex: 0 0 auto; }
 .a11y-note p { font-size: 1rem; margin: 0; }
 
+/* ============================================================
+   Συχνές ερωτήσεις — ακορντεόν <details>/<summary>
+   Λειτουργεί πλήρως χωρίς JavaScript, με πληκτρολόγιο και
+   αναγνώστες οθόνης (WCAG 2.1.1 / 4.1.2).
+   ============================================================ */
+.faq-list { margin: 2.5rem 0 3rem; }
+
+.faq-item {
+  border: 1px solid var(--lilac);
+  border-radius: 10px;
+  background: var(--white);
+  margin-bottom: .75rem;
+}
+.faq-item + .faq-item { margin-top: .75rem; }
+
+.faq-item > summary {
+  display: flex;
+  align-items: flex-start;
+  gap: .625rem;
+  cursor: pointer;
+  padding: 1.125rem 3.25rem 1.125rem 1.25rem;
+  position: relative;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--heading);
+  list-style: none;
+  border-radius: 10px;
+}
+.faq-item > summary::-webkit-details-marker { display: none; }
+
+.faq-num { color: var(--purple); flex: 0 0 auto; }
+
+/* Δείκτης «+ / −» — η κατάσταση δηλώνεται και σημασιολογικά από το
+   ίδιο το <details>, όχι μόνο οπτικά (WCAG 1.4.1). */
+.faq-item > summary::after {
+  content: "";
+  position: absolute;
+  right: 1.25rem;
+  top: 1.5rem;
+  width: 1rem;
+  height: 1rem;
+  background:
+    linear-gradient(var(--purple), var(--purple)) center/100% 3px no-repeat,
+    linear-gradient(var(--purple), var(--purple)) center/3px 100% no-repeat;
+  transition: transform .25s var(--ease);
+}
+.faq-item[open] > summary::after {
+  background: linear-gradient(var(--purple), var(--purple)) center/100% 3px no-repeat;
+  transform: rotate(180deg);
+}
+
+.faq-item > summary:hover { background: var(--grey-bg); }
+.faq-item[open] { border-color: var(--purple); }
+.faq-item[open] > summary { color: var(--purple); }
+
+.faq-answer { padding: 0 1.25rem 1.25rem; }
+.faq-answer p { margin: 0 0 .75rem; font-size: 1.125rem; }
+.faq-answer p:last-child { margin-bottom: 0; }
+.faq-answer ul { margin: 0; padding-left: 1.25rem; font-size: 1.125rem; }
+.faq-answer li { margin-bottom: .4rem; }
+
+.faq-cta-text { text-align: center; font-weight: 700; margin-bottom: 1rem; }
+.panel-actions-center { justify-content: center; }
+
+/* ============================================================
+   Πίνακες δεδομένων (πολιτική απορρήτου)
+   ============================================================ */
+.table-scroll { overflow-x: auto; margin: 1.25rem 0 1.75rem; }
+.data-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 30rem;
+  font-size: 1.0625rem;
+}
+.data-table th,
+.data-table td {
+  border: 1px solid var(--lilac);
+  padding: .75rem .9375rem;
+  text-align: left;
+  vertical-align: top;
+}
+.data-table thead th { background: var(--purple); color: var(--white); }
+.data-table tbody th { background: var(--grey-bg); font-weight: 700; }
+
+.privacy-updated { font-size: 1rem !important; color: var(--muted); }
+
+.toc { list-style: none; margin: 0; padding: 0; }
+.toc li { margin-bottom: .5rem; }
+.toc a { font-size: .9375rem; color: var(--purple); }
+
+/* ============================================================
+   Δήλωση συγκατάθεσης (δεδομένα υγείας)
+   ============================================================ */
+.consent {
+  margin-top: 2rem;
+  background: var(--grey-bg);
+  border-left: 4px solid var(--purple);
+  padding: 1.25rem 1.4rem;
+}
+.consent-title { font-size: 1.25rem; margin: 0 0 .5rem; color: var(--purple); }
+.consent p { font-size: 1rem; margin: 0 0 .75rem; }
+.consent-sample {
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+  background: var(--white);
+  border: 1px solid var(--lilac);
+  padding: .875rem 1rem;
+}
+.consent-box {
+  flex: 0 0 auto;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: .2rem;
+  border: 2px solid var(--purple);
+  border-radius: 3px;
+  background: var(--white);
+}
+.consent-note { margin-bottom: 0 !important; color: var(--muted); }
+
+/* ============================================================
+   Σελίδες σε αναμονή (Blog, Κριτικές)
+   ============================================================ */
+.pending-card {
+  border: 1px solid var(--lilac);
+  border-radius: 10px;
+  background: var(--grey-bg);
+  padding: 2rem;
+  margin: 2rem auto 2.5rem;
+  max-width: 46rem;
+  text-align: left;
+}
+.pending-card p:last-child { margin-bottom: 0; }
+
 /* ---------- Πλαϊνές κάρτες ---------- */
 .aside-card {
   background: var(--grey-bg);
@@ -704,10 +854,30 @@ body.a11y-contrast .btn,
 body.a11y-contrast .a11y-btn,
 body.a11y-contrast .panel,
 body.a11y-contrast .aside-card,
+body.a11y-contrast .faq-item,
+body.a11y-contrast .pending-card,
+body.a11y-contrast .consent-sample,
 body.a11y-contrast .svc-card { border: 2px solid #000000; }
 body.a11y-contrast .btn,
 body.a11y-contrast .nav-link[aria-current="page"],
+body.a11y-contrast .nav-link.nav-cta,
+body.a11y-contrast .data-table thead th,
 body.a11y-contrast .svc-icon { background: #000000; color: #ffffff; }
+body.a11y-contrast .faq-num,
+body.a11y-contrast .faq-item[open] > summary,
+body.a11y-contrast .consent-title { color: #000000; }
+body.a11y-contrast .faq-item > summary::after {
+  background:
+    linear-gradient(#000000, #000000) center/100% 3px no-repeat,
+    linear-gradient(#000000, #000000) center/3px 100% no-repeat;
+}
+body.a11y-contrast .faq-item[open] > summary::after {
+  background: linear-gradient(#000000, #000000) center/100% 3px no-repeat;
+}
+body.a11y-contrast .data-table th,
+body.a11y-contrast .data-table td { border-color: #000000; }
+body.a11y-contrast .consent,
+body.a11y-contrast .a11y-note { border-left-color: #000000; }
 body.a11y-contrast .hero {
   background-image: linear-gradient(rgba(0, 0, 0, .88), rgba(0, 0, 0, .88)), var(--hero-img);
 }
@@ -787,8 +957,15 @@ body.a11y-noanim .reveal { opacity: 1 !important; transform: none !important; }
     /* συμπαγές λευκό: rgba(...,.55) έδινε 2.97:1 στο μωβ, κάτω από το 3:1 */
     border-color: var(--white);
     color: var(--white);
-    font-size: 1.25rem;
+    font-size: 1.125rem;
+    padding: .625rem .9375rem;
     text-align: center;
+  }
+  /* Στο μενού κινητού το CTA αντιστρέφεται για να ξεχωρίζει από το μωβ φόντο. */
+  .main-nav .nav-link.nav-cta {
+    background: var(--white);
+    border-color: var(--white);
+    color: var(--purple);
   }
   .main-nav .nav-link:hover,
   .main-nav .nav-link:focus,
@@ -809,6 +986,9 @@ body.a11y-noanim .reveal { opacity: 1 !important; transform: none !important; }
 
 /* sm — έως 767px */
 @media (max-width: 47.9375em) {
+  .faq-item > summary { font-size: 1.125rem; padding-right: 2.75rem; }
+  .pending-card { padding: 1.5rem; }
+  .consent { padding: 1rem; }
   :root { --sheet: 33.75rem; }          /* 540px */
   body { font-size: 1rem; }
   h1 { font-size: 3rem; }
