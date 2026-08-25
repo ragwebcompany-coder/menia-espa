@@ -696,6 +696,21 @@ ${sectionsWithIds}
 }
 
 /* ---------- Σελίδες σε αναμονή (Blog, Κριτικές) ---------- */
+/* Κάρτα «Γράψε κριτική στο Google».
+   Ο σύνδεσμος ανοίγει σε νέα καρτέλα· ο σκοπός και το άνοιγμα δηλώνονται
+   και στους αναγνώστες οθόνης (WCAG 2.4.4 / 3.2.5). */
+function reviewCta(r) {
+  return `        <div class="review-cta">
+          <p class="review-stars" aria-hidden="true">★★★★★</p>
+          <h2>${r.h2}</h2>
+          <p>${r.text}</p>
+          <a class="btn btn-round" href="${esc(check("SITE.googleReview (σύνδεσμος κριτικής Google)", SITE.googleReview))}"
+             target="_blank" rel="noopener noreferrer">${r.cta}<span class="visually-hidden"> (ανοίγει σε νέα καρτέλα)</span></a>
+          <p class="review-note">${r.note}</p>
+        </div>
+`;
+}
+
 function pagePending(cfg) {
   const main = `  <main id="main">
 ${banner()}
@@ -707,11 +722,12 @@ ${banner()}
         <div class="pending-card">
           ${cfg.body.map((b) => `<p>${b}</p>`).join("\n          ")}
         </div>
-        <div class="panel-actions panel-actions-center">
+${cfg.review ? reviewCta(cfg.review) : ""}        <div class="panel-actions panel-actions-center">
           ${cfg.links
             .map(
+              /* Όταν υπάρχει η κάρτα κριτικής, εκείνη κρατά το κύριο κουμπί. */
               (l, i) =>
-                `<a class="btn ${i === 0 ? "btn-round" : "btn-outline"}" href="${l.href}">${l.label}</a>`
+                `<a class="btn ${!cfg.review && i === 0 ? "btn-round" : "btn-outline"}" href="${l.href}">${l.label}</a>`
             )
             .join("\n          ")}
         </div>

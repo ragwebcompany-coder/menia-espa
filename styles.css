@@ -694,6 +694,31 @@ summary:focus-visible,
 }
 .pending-card p:last-child { margin-bottom: 0; }
 
+/* ---------- Κάρτα κριτικής Google ---------- */
+.review-cta {
+  border: 1px solid var(--lilac);
+  border-radius: 10px;
+  background: var(--white);
+  padding: 2rem;
+  margin: 0 auto 2.5rem;
+  max-width: 46rem;
+  text-align: center;
+}
+.review-cta .review-stars {
+  margin: 0 0 .5rem;
+  color: var(--purple);
+  font-size: 1.75rem;
+  letter-spacing: .25rem;
+  line-height: 1;
+}
+.review-cta h2 { font-size: 1.5rem; margin: 0 0 .75rem; }
+.review-cta p { margin: 0 0 1.5rem; }
+.review-cta .review-note {
+  margin: 1.25rem 0 0;
+  font-size: .9375rem;
+  color: var(--muted);
+}
+
 /* ---------- Πλαϊνές κάρτες ---------- */
 .aside-card {
   background: var(--grey-bg);
@@ -856,6 +881,7 @@ body.a11y-contrast .panel,
 body.a11y-contrast .aside-card,
 body.a11y-contrast .faq-item,
 body.a11y-contrast .pending-card,
+body.a11y-contrast .review-cta,
 body.a11y-contrast .consent-sample,
 body.a11y-contrast .svc-card { border: 2px solid #000000; }
 body.a11y-contrast .btn,
@@ -865,7 +891,8 @@ body.a11y-contrast .data-table thead th,
 body.a11y-contrast .svc-icon { background: #000000; color: #ffffff; }
 body.a11y-contrast .faq-num,
 body.a11y-contrast .faq-item[open] > summary,
-body.a11y-contrast .consent-title { color: #000000; }
+body.a11y-contrast .consent-title,
+body.a11y-contrast .review-stars { color: #000000; }
 body.a11y-contrast .faq-item > summary::after {
   background:
     linear-gradient(#000000, #000000) center/100% 3px no-repeat,
