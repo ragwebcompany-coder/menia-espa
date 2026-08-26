@@ -246,6 +246,12 @@ const contactColumn = (level = "h2") => `        <div>
               </a>
             </li>
             <li>
+              <a href="${SITE.tiktok}" target="_blank" rel="noopener noreferrer">
+                <img src="${IMG.iconTiktok}" alt="" width="27" height="27" />
+                <span class="visually-hidden">TikTok (ανοίγει σε νέα καρτέλα)</span>
+              </a>
+            </li>
+            <li>
               <a href="${SITE.linkedin}" target="_blank" rel="noopener noreferrer">
                 <img src="${IMG.iconLinkedin}" alt="" width="26" height="26" />
                 <span class="visually-hidden">LinkedIn (ανοίγει σε νέα καρτέλα)</span>
@@ -365,7 +371,7 @@ ${contactColumn()}
           closes: "21:00",
         },
       ],
-      sameAs: [SITE.instagram, SITE.linkedin],
+      sameAs: [SITE.instagram, SITE.facebook, SITE.tiktok, SITE.linkedin],
       founder: { "@type": "Person", name: SITE.name, jobTitle: "Διαιτολόγος – Διατροφολόγος" },
       availableService: SERVICES.items.map((s) => ({ "@type": "MedicalTherapy", name: s.title })),
     },

@@ -22,6 +22,7 @@ export const SITE = {
   instagram: "https://www.instagram.com/menia_karanasiou_online_diet/",
   linkedin: "https://www.linkedin.com/in/menia-karanasiou-757995259/",
   facebook: "https://www.facebook.com/profile.php?id=61584065575093&locale=el_GR",
+  tiktok: "https://www.tiktok.com/@menia.karanasiou",
 
   /* Σύνδεσμος «Γράψε κριτική» — επίσημο σύντομο link του Προφίλ Επιχείρησης
      Google (Προφίλ επιχείρησης → «Ζητήστε κριτικές»). Ανακατευθύνει στο
@@ -60,6 +61,7 @@ export const IMG = {
   iconInstagram: "assets/icon-instagram.png",
   iconLinkedin: "assets/icon-linkedin.png",
   iconFacebook: "assets/icon-facebook.png",
+  iconTiktok: "assets/icon-tiktok.png",
   iconWeight: "assets/icon-weight.png",
   iconDiets: "assets/icon-diets.png",
   iconClinical: "assets/icon-clinical.png",
@@ -372,7 +374,7 @@ export const FAQ = {
         "<ul><li>Μέσω του ημερολογίου online κρατήσεων ή της <a href=\"epikoinonia.html\">σελίδας επικοινωνίας</a></li>" +
         "<li>Επικοινωνώντας τηλεφωνικά (κλήση ή μήνυμα)</li>" +
         "<li>Μέσω email</li>" +
-        "<li>Μέσω προσωπικού μηνύματος στα social media (Instagram, Facebook, LinkedIn)</li></ul>",
+        "<li>Μέσω προσωπικού μηνύματος στα social media (Instagram, Facebook, TikTok, LinkedIn)</li></ul>",
     },
     {
       q: "Μπορώ να αλλάξω ή να ακυρώσω το ραντεβού μου;",
